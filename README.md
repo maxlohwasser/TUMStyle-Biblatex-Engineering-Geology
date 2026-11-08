@@ -52,3 +52,7 @@ Eine ausführlichere Beschreibung der Einbindung, der Zitierbefehle und der unte
 ## Verwendung und Weiterentwicklung
 
 Der Zitierstil wird fortlaufend gepflegt. Fehlerhinweise und Verbesserungsvorschläge sind willkommen.
+
+## Disclaimer
+
+This project is an independently developed and maintained BibLaTeX citation style. It is not an official publication of the Technical University of Munich (TUM) and is not affiliated with or endorsed by the university.
