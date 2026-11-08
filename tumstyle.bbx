@@ -1,0 +1,310 @@
+\ProvidesFile{tumstyle.bbx}[2026/02/20 TUM bibliography style]
+
+\RequireBibliographyStyle{standard}
+
+\ExecuteBibliographyOptions{
+  maxbibnames=99,
+  minbibnames=99
+}
+
+\DeclareNameAlias{author}{family-given}
+\DeclareNameAlias{editor}{family-given}
+
+\DeclareDelimFormat[bib]{multinamedelim}{\addcomma\space}
+\DeclareDelimFormat[bib]{finalnamedelim}{\addspace\&\space}
+\DeclareDelimFormat[bib]{finalandcomma}{}
+
+\newbibmacro*{tum:yearparens}{%
+  \iffieldundef{labelyear}
+    {}
+    {\printtext[parens]{\printfield{labelyear}\printfield{extraalpha}}}%
+}
+
+% --- Strings (deutsch) ---
+\NewBibliographyString{vmathesis}
+\NewBibliographyString{vbathesis}
+
+\DefineBibliographyStrings{ngerman}{%
+  nodate = {o\adddot D\adddot},
+  phdthesis = {Dissertation},
+  mathesis = {unveröff. Masterarbeit},
+  bathesis = {unveröff. Bachelorarbeit},
+  urlseen = {abgerufen am},
+  andothers = {et\addabbrvspace al\adddot},
+  vmathesis = {veröff. Masterarbeit},
+  vbathesis = {veröff. Bachelorarbeit}
+}
+
+% --- Feldformate ---
+\DeclareFieldFormat{title}{#1}
+\DeclareFieldFormat[article]{title}{#1}
+\DeclareFieldFormat[inproceedings]{title}{#1}
+\DeclareFieldFormat[thesis]{title}{#1}
+\DeclareFieldFormat[misc]{title}{#1}
+\DeclareFieldFormat[article]{journaltitle}{#1}
+\DeclareFieldFormat[inproceedings]{booktitle}{#1}
+\DeclareFieldFormat[incollection]{booktitle}{#1}
+
+\DeclareFieldFormat[article]{volume}{#1}
+\DeclareFieldFormat{volume}{#1. Band}
+
+\DeclareFieldFormat{pages}{#1}
+\DeclareFieldFormat[article]{pages}{#1}
+
+\DeclareFieldFormat[map]{number}{Blatt\addspace #1}
+
+% Namen in Kapitälchen
+\renewcommand*{\mkbibnamefamily}[1]{\textsc{#1}}
+\renewcommand*{\mkbibnamegiven}[1]{\textsc{#1}}
+
+% Delimiter zwischen Name und Jahr
+\renewcommand*{\nameyeardelim}{\addspace}
+
+% --- URL/Urldate ---
+\AtBeginBibliography{%
+  \urlstyle{same}%
+  \renewcommand{\UrlFont}{\normalfont}%
+}
+
+\DeclareFieldFormat{doi}{DOI:\space\href{https://doi.org/#1}{#1}}
+\DeclareFieldFormat{url}{\url{#1}}
+\DeclareFieldFormat{urldate}{\bibstring{urlseen}\space#1}
+
+\renewbibmacro*{url+urldate}{%
+  \printtext{\usebibmacro{url}}%
+  \setunit*{\addcomma\addspace}%
+  \usebibmacro{urldate}%
+}
+
+\newbibmacro*{doi+url}{%
+  \iffieldundef{doi}
+    {}
+    {%
+      \setunit*{\adddot\space}%
+      \printfield{doi}%
+    }%
+  \iffieldundef{url}
+    {}
+    {%
+      \setunit*{\adddot\space}%
+      \usebibmacro{url+urldate}%
+    }%
+}
+
+% --- Drivers: ---
+% --- @book ---
+\DeclareBibliographyDriver{book}{%
+  \usebibmacro{author/editor}%
+  \setunit{\addspace}%
+  \usebibmacro{tum:yearparens}%
+  \setunit{\addcolon\space}%
+  \printfield{title}%
+  \setunit{\adddot}%
+  \printtext{ -- }%
+  \printfield{pagetotal}%
+  \iffieldundef{edition}{}{%
+    \addcomma\space\printfield{edition}}%
+  \iffieldundef{series}{}{%
+    \addcomma\space\printfield{series}}%
+  \iffieldundef{volume}{}{%
+    \addcomma\space\printfield{volume}}%
+  \iflistundef{location}{}{%
+    \addcomma\space\printlist{location}}%
+  \iflistundef{publisher}
+    {}
+    {\addspace\printtext{(\printlist{publisher})}}%
+  \usebibmacro{doi+url}%
+\finentry%
+}
+
+% --- @article ---
+\DeclareBibliographyDriver{article}{%
+  \usebibmacro{author/editor}%
+  \setunit{\addspace}%
+  \usebibmacro{tum:yearparens}%
+  \setunit{\addcolon\space}%
+  \printfield{title}%
+  \setunit{\adddot}%
+  \printtext{ -- }%
+  \printfield{journaltitle}%
+  \setunit{\addcomma\space}%
+  \printfield{volume}%
+  \setunit{\addcolon\space}%
+  \printfield{pages}%
+  \iflistundef{location}
+    {}
+    {\setunit{\addcomma\space}\printlist{location}}%
+  \usebibmacro{doi+url}%
+\finentry%
+}
+
+% --- @map ---
+\DeclareBibliographyDriver{map}{%
+  \usebibmacro{author/editor}%
+  \setunit{\addspace}%
+  \usebibmacro{tum:yearparens}%
+  \setunit{\addcolon\space}%
+  \printfield{title}%
+  \iffieldundef{number}{}{%
+    \addcomma\space\printfield{number}%
+  }%
+  \setunit{\adddot}%
+  \printtext{ -- }%
+  \iffieldundef{edition}
+    {}
+    {\printfield{edition}}%
+  \iflistundef{location}
+    {}
+    {%
+      \iffieldundef{edition}
+        {}
+        {\addcomma\space}%
+      \printlist{location}%
+    }%
+  \iflistundef{publisher}
+    {}
+    {\addspace\printtext{(\printlist{publisher})}}%
+\finentry%
+}
+
+% --- @inproceedings ---
+\DeclareBibliographyDriver{inproceedings}{%
+  \usebibmacro{author/editor}%
+  \setunit{\addspace}%
+  \usebibmacro{tum:yearparens}%
+  \setunit{\addcolon\space}%
+  \printfield{title}%
+  \setunit{\adddot}%
+  \printtext{ -- }%
+  \printtext{In:\space}%
+  \ifnameundef{editor}
+    {}
+    {%
+      \printnames{editor}%
+      \addspace\printtext{(Hrsg.)}%
+      \printtext{: }\relax
+    }%
+  \printfield{booktitle}%
+  \iffieldundef{series}{}{%
+    \addcomma\space\printfield{series}}%
+  \iffieldundef{volume}{}{%
+    \addcomma\space\printfield{volume}}%
+  \iffieldundef{pages}{}{%
+    \addcomma\space\printfield{pages}}%
+  \iflistundef{location}{}{%
+    \addcomma\space\printlist{location}}%
+  \iflistundef{publisher}
+    {}
+    {\addspace\printtext{(\printlist{publisher})}}%
+  \usebibmacro{doi+url}%
+\finentry%
+}
+
+% --- @misc: universeller Literatur-Fallback ---
+\DeclareBibliographyDriver{misc}{%
+  \usebibmacro{author/editor}%
+  \setunit{\addspace}%
+  \usebibmacro{tum:yearparens}%
+  \setunit{\addcolon\space}%
+  \printfield{title}%
+  \setunit{\adddot}%
+  \printtext{ -- }%
+  \iffieldundef{type}
+    {}
+    {\printfield{type}\setunit{\addcomma\space}}%
+  \iflistundef{institution}
+    {}
+    {\printlist{institution}\setunit{\addcomma\space}}%
+  \iffieldundef{edition}
+    {}
+    {\printfield{edition}\setunit{\addcomma\space}}%
+  \iffieldundef{series}
+    {}
+    {\printfield{series}\setunit{\addcomma\space}}%
+  \iffieldundef{volume}
+    {}
+    {\printfield{volume}\setunit{\addcomma\space}}%
+  \iffieldundef{version}
+    {}
+    {\printfield{version}\setunit{\addcomma\space}}%
+  \iffieldundef{pagetotal}
+    {}
+    {\printfield{pagetotal}%
+     \setunit*{\addcomma\space}}%
+  \iflistundef{location}
+    {}
+    {\printlist{location}\setunit{\addcomma\space}}%
+  \iflistundef{publisher}
+    {}
+    {\printlist{publisher}\setunit{\addcomma\space}}%
+  \iffieldundef{note}
+    {}
+    {\printfield{note}\setunit{\addcomma\space}}%
+  \usebibmacro{doi+url}%
+  \finentry%
+}
+
+% --- @techreport ---
+\newbibmacro*{tum:yearmonthparens}{%
+  \iffieldundef{year}
+    {}
+    {%
+      \printtext[parens]{%
+        \printfield{year}%
+        \iffieldundef{month}
+          {}
+          {-\ifnum\thefield{month}<10 0\fi\thefield{month}}%
+      }%
+    }%
+}
+\DeclareBibliographyDriver{report}{%
+  \printnames{author}%
+  \setunit{\addspace}%
+  \usebibmacro{tum:yearmonthparens}%
+  \setunit{\addcolon\space}%
+  \printfield{title}%
+  \setunit{\adddot}%
+  \printtext{ -- }%
+  \iflistundef{location}
+    {}
+    {\printlist{location}}%
+  \iflistundef{institution}
+    {}
+    {\addspace\printtext{(\printlist{institution})}}%
+  \finentry%
+}
+
+% --- @thesis ---
+\DeclareBibliographyDriver{thesis}{%
+  \usebibmacro{author/editor}%
+  \setunit{\addspace}%
+  \usebibmacro{tum:yearparens}%
+  \setunit{\addcolon\space}%
+  \printfield{title}%
+  \setunit{\adddot}%
+  \printtext{ -- }%
+  \iffieldundef{pagetotal}{}{%
+    \printfield{pagetotal}%
+    \setunit*{\addcomma\space}%
+  }%
+  \iffieldundef{type}{}{%
+    \printfield{type}%
+    \setunit*{\addcomma\space}%
+  }%
+  \iflistundef{institution}{}{%
+    \printlist{institution}%
+    \setunit*{\addcomma\space}%
+  }%
+  \iflistundef{location}{}{%
+    \printlist{location}%
+  }%
+  \finentry%
+}
+
+% --- @online ---
+\DeclareBibliographyDriver{online}{%
+  \printfield{label}%
+  \setunit{\addcolon\space}%
+  \usebibmacro{url+urldate}%
+  \finentry%
+}

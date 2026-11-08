@@ -1,0 +1,95 @@
+\ProvidesFile{tumstyle.cbx}[2026/02/20 TUM citation style]
+
+\RequireCitationStyle{authoryear}
+
+\ExecuteBibliographyOptions{
+  maxcitenames=2,
+  mincitenames=1
+}
+
+% Keine automatische Seiten-Vorsilbe ("S.") in Postnotes
+\DeclareFieldFormat{postnote}{#1}
+\DeclareFieldFormat{multipostnote}{#1}
+
+% Zur Sicherheit auch kontextspezifisch:
+\DeclareFieldFormat[cite]{postnote}{#1}
+\DeclareFieldFormat[cite]{multipostnote}{#1}
+\DeclareFieldFormat[parencite]{postnote}{#1}
+\DeclareFieldFormat[textcite]{postnote}{#1}
+
+\DeclareNameFormat{tum:cite}{%
+  \ifnumgreater{\value{listtotal}}{2}
+    {%
+      \ifnumcomp{\value{listcount}}{=}{1}
+        {\mkbibnamefamily{\namepartfamily}\addspace\bibstring{andothers}}
+        {}%
+    }
+    {%
+      \mkbibnamefamily{\namepartfamily}%
+      \ifnumcomp{\value{listtotal}}{=}{2}
+        {\ifnumcomp{\value{listcount}}{=}{1}{\addspace\&\space}{}}
+        {}%
+    }%
+}
+
+\newbibmacro*{tum:citelabel}{%
+  \ifentrytype{online}
+    {\printfield{label}}%
+    {\printnames[tum:cite]{labelname}}%
+}
+
+\newcommand{\psq}{\addspace f\adddot}
+\newcommand{\psqq}{\addspace ff\adddot}
+
+\DeclareCiteCommand{\parencite}[\mkbibparens]
+  {}
+  {%
+    \printtext[bibhyperref]{%
+      \usebibmacro{tum:citelabel}%
+      \ifentrytype{online}
+        {}
+        {\space\printfield{labelyear}\printfield{extraalpha}}%
+    }%
+    \iffieldundef{postnote}
+      {}
+      {\addcolon\space\printfield{postnote}}%
+  }
+  {\multicitedelim}
+  {}
+
+\DeclareCiteCommand{\textcite}
+  {}
+  {%
+    \printtext[bibhyperref]{%
+      \usebibmacro{tum:citelabel}%
+      \ifentrytype{online}
+        {}
+        {%
+          \space\mkbibparens{%
+            \printfield{labelyear}%
+            \printfield{extraalpha}%
+            \iffieldundef{postnote}
+              {}
+              {\addcolon\space\printfield{postnote}}%
+          }%
+        }%
+    }%
+  }
+  {\multicitedelim}
+  {}
+
+\DeclareCiteCommand{\cite}[\mkbibparens]
+  {}
+  {%
+    \printtext[bibhyperref]{%
+      \usebibmacro{tum:citelabel}%
+      \ifentrytype{online}
+        {}
+        {\space\printfield{labelyear}\printfield{extraalpha}}%
+    }%
+    \iffieldundef{postnote}
+      {}
+      {\addcolon\space\printfield{postnote}}%
+  }
+  {\multicitedelim}
+  {}
