@@ -6,7 +6,7 @@ Ein deutschsprachiger BibLaTeX-Zitierstil für wissenschaftliche Arbeiten.
 
 ## Übersicht
 
-TUMStyle ist ein benutzerdefinierter Zitierstil für LaTeX. Er legt die Formatierung von Kurzbelegen im Text sowie die Darstellung der Einträge im Literaturverzeichnis fest. Der Stil orientiert sich an den Anforderungen eines TUM-orientierten Lehrstuhls.
+TUMStyle ist ein benutzerdefinierter Zitierstil für LaTeX. Er legt die Formatierung von Kurzbelegen im Text sowie die Darstellung der Einträge im Literaturverzeichnis fest. Der Stil orientiert sich an den Anforderungen des Lehrstuhls für Ingenieurgeologie der Technischen Universität München (TUM).
 
 ## Projektdateien
 
